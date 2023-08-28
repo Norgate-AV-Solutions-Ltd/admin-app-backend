@@ -4,7 +4,7 @@ import path from "path";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import mongoose from "mongoose";
-import { root } from "./routes";
+import { rootRoute, userRoute } from "./routes";
 import { logger, errorHandler, logEvent } from "./middleware";
 import { options as corsOptions } from "./config/cors";
 import { dbConnect } from "./config/db";
@@ -23,7 +23,8 @@ app.use(cookieParser());
 
 app.use("/", express.static(path.join(__dirname, "./public")));
 
-app.use("/", root);
+app.use("/", rootRoute);
+app.use("/users", userRoute);
 
 app.all("*", (req, res) => {
     res.status(404);
