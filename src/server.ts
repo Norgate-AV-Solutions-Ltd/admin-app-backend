@@ -1,13 +1,22 @@
 import express from "express";
 import path from "path";
-import { router } from "./routes/root";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import { root } from "./routes";
+import { logger, errorHandler } from "./middleware";
+import { corsOptions } from "./config/cors/corsOptions";
 
 const app = express();
 const PORT = process.env.PORT || 3500;
 
+app.use(logger);
+app.use(cors(corsOptions));
+app.use(express.json());
+app.use(cookieParser());
+
 app.use("/", express.static(path.join(__dirname, "./public")));
 
-app.use("/", router);
+app.use("/", root);
 
 app.all("*", (req, res) => {
     res.status(404);
@@ -20,6 +29,8 @@ app.all("*", (req, res) => {
         res.type("txt").send("404 Not found");
     }
 });
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
