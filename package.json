@@ -2,8 +2,19 @@
     "name": "admin-app-backend",
     "version": "1.0.0",
     "description": "Backend for admin app",
-    "main": "server.js",
+    "author": "Norgate AV Solutions Ltd",
+    "main": "dist/server.js",
     "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Norgate-AV-Solutions-Ltd/admin-app-backend.git"
+    },
+    "bugs": {
+        "url": "https://github.com/Norgate-AV-Solutions-Ltd/admin-app-backend/issues"
+    },
+    "engines": {
+        "node": ">=18"
+    },
     "scripts": {
         "lint": "tsc --noEmit",
         "build": "tsup src/server.ts --clean",
