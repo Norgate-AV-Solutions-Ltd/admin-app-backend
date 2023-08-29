@@ -17,7 +17,7 @@
     },
     "scripts": {
         "lint": "tsc --noEmit",
-        "build": "tsup src/server.ts --clean",
+        "build": "tsup",
         "prestart": "yarn build",
         "start": "cross-env NODE_ENV=production node dist/server.js",
         "dev": "nodemon --exec ts-node src/server.ts"

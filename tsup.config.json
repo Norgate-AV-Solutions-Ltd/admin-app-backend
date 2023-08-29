@@ -1,0 +1,6 @@
+{
+    "entry": ["src/server.ts"],
+    "format": ["cjs"],
+    "clean": true,
+    "dts": false
+}
