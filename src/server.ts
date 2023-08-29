@@ -8,14 +8,14 @@ import config from "config";
 import { rootRoute, userRoute } from "./routes";
 import { logger, errorHandler, logEvent } from "./middleware";
 import { options as corsOptions } from "./config/cors";
-import { dbConnect } from "./config/db";
+import connect from "./utils/db/connect";
 
 const app = express();
 const port = config.get<number>("port");
 
 console.log(process.env.NODE_ENV);
 
-dbConnect();
+connect();
 
 app.use(logger);
 app.use(cors(corsOptions));

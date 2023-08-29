@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import config from "config";
 
-export const dbConnect = async () => {
+async function connect() {
     try {
         const uri = config.get<string>("db.uri");
 
@@ -10,7 +10,10 @@ export const dbConnect = async () => {
         }
 
         await mongoose.connect(uri);
-    } catch (err) {
-        console.log(err);
+    } catch (error) {
+        console.error(error);
+        process.exit(1);
     }
-};
+}
+
+export default connect;
