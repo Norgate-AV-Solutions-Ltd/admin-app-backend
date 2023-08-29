@@ -6,18 +6,19 @@ import cors from "cors";
 import mongoose from "mongoose";
 import config from "config";
 import { rootRoute, userRoute } from "./routes";
-import { logger, errorHandler, logEvent } from "./middleware";
+import { errorHandler, logHandler } from "./middleware";
 import { options as corsOptions } from "./config/cors";
 import connect from "./utils/db/connect";
+import logger from "./utils/logger";
 
 const app = express();
 const port = config.get<number>("port");
 
-console.log(process.env.NODE_ENV);
+logger.info(`Running in ${process.env.NODE_ENV} mode`);
 
 connect();
 
-app.use(logger);
+app.use(logHandler);
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
@@ -42,17 +43,13 @@ app.all("*", (req, res) => {
 app.use(errorHandler);
 
 mongoose.connection.once("open", () => {
-    console.log("Connected to MongoDB");
+    logger.info("Connected to MongoDB");
 
     app.listen(port, () => {
-        console.log(`Server running on port ${port}`);
+        logger.info(`Server is running at http://localhost:${port}`);
     });
 });
 
 mongoose.connection.on("error", (err) => {
-    console.log(err);
-
-    const { no, code, syscall, hostname } = err;
-
-    logEvent(`[${no}]-[${code}]-[${syscall}]-[${hostname}]`, "db-errors.log");
+    logger.error(err, "MongoDB connection error");
 });

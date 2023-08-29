@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from "express";
-import { logEvent } from "./logger";
+import logger from "../utils/logger";
 
-export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
-    const { name, message, stack } = err;
+export const errorHandler = (error: Error, req: Request, res: Response, _: NextFunction) => {
+    const { name, message, stack } = error;
     const { method, url, headers } = req;
 
-    logEvent(`[${name}]-[${method}]-[${url}]-[${headers.origin}]: ${message}`, "errors.log");
-    console.log(stack);
+    logger.error(`${name} ${method} ${url} ${headers.origin}: ${message}`);
+    logger.error(stack);
 
     const status = res.statusCode ? res.statusCode : 500;
 

@@ -1,2 +1,2 @@
 export { errorHandler } from "./errorHandler";
-export { logger, logEvent } from "./logger";
+export { logHandler } from "./logHandler";

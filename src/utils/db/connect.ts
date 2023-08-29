@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import config from "config";
+import logger from "../logger";
 
 async function connect() {
     try {
@@ -11,7 +12,7 @@ async function connect() {
 
         await mongoose.connect(uri);
     } catch (error) {
-        console.error(error);
+        logger.error(error);
         process.exit(1);
     }
 }
