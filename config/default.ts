@@ -1,6 +1,6 @@
 export default {
     port: 3500,
     db: {
-        uri: "",
+        uri: "mongodb://localhost:27017/db",
     },
 };
