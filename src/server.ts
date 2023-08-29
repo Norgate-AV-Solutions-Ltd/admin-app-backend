@@ -4,13 +4,14 @@ import path from "path";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import mongoose from "mongoose";
+import config from "config";
 import { rootRoute, userRoute } from "./routes";
 import { logger, errorHandler, logEvent } from "./middleware";
 import { options as corsOptions } from "./config/cors";
 import { dbConnect } from "./config/db";
 
 const app = express();
-const PORT = process.env.PORT || 3500;
+const port = config.get<number>("port");
 
 console.log(process.env.NODE_ENV);
 
@@ -43,8 +44,8 @@ app.use(errorHandler);
 mongoose.connection.once("open", () => {
     console.log("Connected to MongoDB");
 
-    app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`);
+    app.listen(port, () => {
+        console.log(`Server running on port ${port}`);
     });
 });
 
