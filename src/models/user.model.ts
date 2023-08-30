@@ -1,5 +1,18 @@
 import mongoose from "mongoose";
 
+export interface UserDocument extends mongoose.Document {
+    name: string;
+    email: string;
+    password: string;
+    role: "User" | "Administrator";
+    active: boolean;
+    verified: boolean;
+    deletable: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+    isPasswordMatch: (password: string) => Promise<boolean>;
+}
+
 const userSchema = new mongoose.Schema(
     {
         name: {
@@ -37,6 +50,6 @@ const userSchema = new mongoose.Schema(
     },
 );
 
-const UserModel = mongoose.model("User", userSchema);
+const UserModel = mongoose.model<UserDocument>("User", userSchema);
 
 export default UserModel;
