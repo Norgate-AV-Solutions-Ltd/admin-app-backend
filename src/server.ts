@@ -7,7 +7,6 @@ import mongoose from "mongoose";
 import config from "config";
 import { healthcheckRoute, rootRoute, userRoute } from "./routes";
 import { errorHandler, logHandler } from "./middleware";
-import { options as corsOptions } from "./config/cors";
 import connect from "./utils/db/connect";
 import logger from "./utils/logger";
 
@@ -19,7 +18,28 @@ logger.info(`Running in ${process.env.NODE_ENV} mode`);
 connect();
 
 app.use(logHandler);
-app.use(cors(corsOptions));
+
+app.use(
+    cors({
+        origin: (origin, callback) => {
+            if (!origin) {
+                return callback(null, true);
+            }
+
+            const origins = config.get<string[]>("cors.origins");
+            const isAllowed = origin in origins;
+
+            if (isAllowed) {
+                return callback(null, true);
+            }
+
+            return callback(new Error("Not allowed by CORS"));
+        },
+        credentials: true,
+        optionsSuccessStatus: 200,
+    }),
+);
+
 app.use(express.json());
 app.use(cookieParser());
 
