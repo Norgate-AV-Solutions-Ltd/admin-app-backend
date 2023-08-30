@@ -6,7 +6,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import config from "config";
 import { healthcheckRoute, rootRoute, userRoute } from "./routes";
-import { errorHandler, logHandler } from "./middleware";
+import { errorMiddleware, loggerMiddleware } from "./middleware";
 import connect from "./utils/db/connect";
 import logger from "./utils/logger";
 
@@ -17,7 +17,7 @@ logger.info(`Running in ${process.env.NODE_ENV} mode`);
 
 connect();
 
-app.use(logHandler());
+app.use(loggerMiddleware);
 
 app.use(
     cors({
@@ -61,7 +61,7 @@ app.all("*", (req, res) => {
     }
 });
 
-app.use(errorHandler());
+app.use(errorMiddleware);
 
 mongoose.connection.once("open", () => {
     logger.info("Connected to MongoDB");
