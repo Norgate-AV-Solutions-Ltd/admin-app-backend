@@ -6,4 +6,9 @@ export default {
     cors: {
         origins: ["http://localhost:3000"],
     },
+    user: {
+        password: {
+            saltWorkFactor: 10,
+        },
+    },
 };
