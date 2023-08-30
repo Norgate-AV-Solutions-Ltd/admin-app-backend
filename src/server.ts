@@ -17,7 +17,7 @@ logger.info(`Running in ${process.env.NODE_ENV} mode`);
 
 connect();
 
-app.use(logHandler);
+app.use(logHandler());
 
 app.use(
     cors({
@@ -61,7 +61,7 @@ app.all("*", (req, res) => {
     }
 });
 
-app.use(errorHandler);
+app.use(errorHandler());
 
 mongoose.connection.once("open", () => {
     logger.info("Connected to MongoDB");

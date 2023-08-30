@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import logger from "../utils/logger";
 
-export const errorHandler = (error: Error, req: Request, res: Response, _: NextFunction) => {
+export const errorHandler = () => (error: Error, req: Request, res: Response, _: NextFunction) => {
     const { name, message, stack } = error;
     const { method, url, headers } = req;
 
