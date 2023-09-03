@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "Backend for admin app",
     "author": "Norgate AV Solutions Ltd",
-    "main": "dist/server.js",
+    "main": "dist/index.js",
     "license": "MIT",
     "repository": {
         "type": "git",
@@ -19,11 +19,12 @@
         "lint": "tsc --noEmit",
         "build": "tsup",
         "prestart": "yarn build",
-        "start": "cross-env NODE_ENV=production node dist/server.js",
-        "dev": "nodemon --exec ts-node src/server.ts"
+        "start": "cross-env NODE_ENV=production node dist/index.js",
+        "dev": "nodemon --exec ts-node src/index.ts"
     },
     "devDependencies": {
         "@types/bcrypt": "^5.0.0",
+        "@types/compression": "^1.7.2",
         "@types/config": "^3.3.0",
         "@types/cookie-parser": "^1.4.3",
         "@types/cors": "^2.8.13",
@@ -31,17 +32,20 @@
         "@types/node": "^20.5.6",
         "cross-env": "^7.0.3",
         "nodemon": "^3.0.1",
+        "tsconfig-paths": "^4.2.0",
         "tsup": "^7.2.0",
         "typescript": "^5.2.2"
     },
     "dependencies": {
         "bcrypt": "^5.1.1",
+        "compression": "^1.7.4",
         "config": "^3.3.9",
         "cookie-parser": "^1.4.6",
         "cors": "^2.8.5",
         "dotenv": "^16.3.1",
         "express": "^4.18.2",
-        "express-async-handler": "^1.2.0",
+        "helmet": "^7.0.0",
+        "module-alias": "^2.2.3",
         "mongoose": "^7.4.5",
         "pino": "^8.15.0",
         "pino-pretty": "^10.2.0",

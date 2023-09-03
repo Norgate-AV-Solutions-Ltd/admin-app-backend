@@ -1,19 +1,7 @@
-import mongoose from "mongoose";
+import mongoose, { CallbackWithoutResultAndOptionalError } from "mongoose";
 import bcrypt from "bcrypt";
 import config from "config";
-
-export interface UserDocument extends mongoose.Document {
-    name: string;
-    email: string;
-    password: string;
-    role: "User" | "Administrator";
-    active: boolean;
-    verified: boolean;
-    deletable: boolean;
-    createdAt: Date;
-    updatedAt: Date;
-    isPasswordMatch: (password: string) => Promise<boolean>;
-}
+import { UserDocument } from "@/resources/user/user.interface";
 
 const userSchema = new mongoose.Schema(
     {
@@ -25,6 +13,7 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: true,
             unique: true,
+            trim: true,
         },
         password: {
             type: String,
@@ -52,7 +41,7 @@ const userSchema = new mongoose.Schema(
     },
 );
 
-userSchema.pre("save", async function (next: mongoose.CallbackWithoutResultAndOptionalError) {
+userSchema.pre("save", async function (next: CallbackWithoutResultAndOptionalError) {
     const user = this as UserDocument;
 
     if (!user.isModified("password")) {
@@ -69,12 +58,10 @@ userSchema.pre("save", async function (next: mongoose.CallbackWithoutResultAndOp
     return next();
 });
 
-userSchema.methods.isPasswordMatch = async function (password: string): Promise<boolean> {
+userSchema.methods.isValidPassword = async function (password: string): Promise<boolean> {
     const user = this as UserDocument;
 
     return bcrypt.compare(password, user.password).catch((_) => false);
 };
 
-const UserModel = mongoose.model<UserDocument>("User", userSchema);
-
-export default UserModel;
+export default mongoose.model<UserDocument>("User", userSchema);

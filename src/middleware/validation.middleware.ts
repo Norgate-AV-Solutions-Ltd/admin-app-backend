@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import { AnyZodObject } from "zod";
+import { AnyZodObject, ZodError } from "zod";
 
-const validateMiddleware =
-    (schema: AnyZodObject) => (req: Request, res: Response, next: NextFunction) => {
+function validationMiddleware(schema: AnyZodObject) {
+    return (req: Request, res: Response, next: NextFunction) => {
         try {
             schema.parse({
                 body: req.body,
@@ -12,8 +12,9 @@ const validateMiddleware =
 
             return next();
         } catch (error: any) {
-            return res.status(400).send(error.message);
+            return res.status(400).send(error.errors);
         }
     };
+}
 
-export default validateMiddleware;
+export default validationMiddleware;
