@@ -1,5 +1,5 @@
 {
-    "entry": ["src/server.ts"],
+    "entry": ["src/index.ts"],
     "format": ["cjs"],
     "clean": true,
     "dts": false
