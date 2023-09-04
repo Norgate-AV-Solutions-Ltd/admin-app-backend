@@ -6,6 +6,9 @@ import RootController from "@/resources/root/root.controller";
 import HealthcheckController from "@/resources/healthcheck/healthcheck.controller";
 import UserController from "@/resources/user/user.controller";
 import logger from "@/utils/logger";
+import validateEnv from "@/utils/validateEnv";
+
+validateEnv();
 
 try {
     const app = new App(
