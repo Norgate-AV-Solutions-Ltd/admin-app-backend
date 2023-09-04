@@ -14,9 +14,10 @@
         "forceConsistentCasingInFileNames": true,
         "moduleResolution": "node16",
         "noUncheckedIndexedAccess": true,
+        "resolveJsonModule": true,
         "baseUrl": ".",
         "paths": {
-            "@/*": ["/*"],
+            "@/*": ["./", "./*"],
             "@/resources/*": ["src/resources/*"],
             "@/middleware/*": ["src/middleware/*"],
             "@/utils/*": ["src/utils/*"]
