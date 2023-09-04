@@ -1,6 +1,11 @@
 import { Model } from "mongoose";
 import UserModel from "@/resources/user/user.model";
-import { CreateUserInput, DeleteUserInput, UserDocument } from "@/resources/user/user.interface";
+import {
+    CreateUserInput,
+    UpdateUserInput,
+    DeleteUserInput,
+    UserDocument,
+} from "@/resources/user/user.interface";
 
 class UserService {
     private user: Model<UserDocument> = UserModel;
@@ -19,20 +24,6 @@ class UserService {
         }
     }
 
-    // public async getUserById(id: string) {
-    //     try {
-    //         const user = await this.user.findById(id).select("-password").lean();
-
-    //         if (!user) {
-    //             throw new Error("User not found");
-    //         }
-
-    //         return user;
-    //     } catch (error: any) {
-    //         throw new Error(error);
-    //     }
-    // }
-
     public async createUser(input: CreateUserInput) {
         try {
             const user = await this.user.create(input);
@@ -42,8 +33,47 @@ class UserService {
         }
     }
 
-    public async updateUser(input: any) {
-        throw new Error("Not implemented");
+    public async updateUser(input: UpdateUserInput) {
+        try {
+            const user = await this.user.findById(input.id).exec();
+
+            if (!user) {
+                throw new Error("User not found");
+            }
+
+            if (
+                !input.name &&
+                !input.email &&
+                !input.password &&
+                !input.role &&
+                input.active === undefined
+            ) {
+                throw new Error("Nothing to update");
+            }
+
+            user.name = input.name || user.name;
+            user.email = input.email || user.email;
+            user.role = input.role || user.role;
+            user.active = input.active !== undefined ? input.active : user.active;
+
+            if (input.password && input.newPassword) {
+                if (!(await user.isValidPassword(input.password))) {
+                    throw new Error("Invalid password");
+                }
+
+                user.password = input.newPassword;
+            }
+
+            const updatedUser = await user.save();
+
+            if (!updatedUser) {
+                throw new Error("Error updating user");
+            }
+
+            return await this.user.findById(user._id).select("-password").lean();
+        } catch (error: any) {
+            throw new Error(error);
+        }
     }
 
     public async deleteUser(input: DeleteUserInput) {

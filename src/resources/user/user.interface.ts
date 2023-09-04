@@ -9,6 +9,16 @@ export interface CreateUserInput {
     role: UserRole;
 }
 
+export interface UpdateUserInput {
+    id: string;
+    name?: string;
+    email?: string;
+    password?: string;
+    newPassword?: string;
+    role?: UserRole;
+    active?: boolean;
+}
+
 export interface DeleteUserInput {
     id: string;
 }

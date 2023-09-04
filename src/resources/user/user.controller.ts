@@ -7,6 +7,8 @@ import {
     getUsersSchema,
     CreateUserSchema,
     createUserSchema,
+    UpdateUserSchema,
+    updateUserSchema,
     DeleteUserSchema,
     deleteUserSchema,
 } from "@/resources/user/user.schema";
@@ -26,7 +28,7 @@ class UserController implements Controller {
             .route(this.path)
             .get(validationMiddleware(getUsersSchema), this.getUsers)
             .post(validationMiddleware(createUserSchema), this.createUser)
-            .patch(this.updateUser)
+            .patch(validationMiddleware(updateUserSchema), this.updateUser)
             .delete(validationMiddleware(deleteUserSchema), this.deleteUser);
     }
 
@@ -55,7 +57,7 @@ class UserController implements Controller {
     // @route   POST /users
     // @access  Private/Admin
     private createUser = async (
-        req: Request<{}, {}, Omit<CreateUserSchema["body"], "passwordConfirmation">>,
+        req: Request<{}, {}, CreateUserSchema>,
         res: Response,
         next: NextFunction,
     ) => {
@@ -70,55 +72,24 @@ class UserController implements Controller {
     // @desc    Update a user
     // @route   PATCH /users
     // @access  Private/Admin
-    private updateUser = async (req: Request, res: Response, next: NextFunction) => {
-        throw new Error("Not implemented");
-
-        // const { id, firstName, lastName, email, password, role, active } = req.body;
-
-        // if (!id || !firstName || lastName == null || !email || !role || typeof active !== "boolean") {
-        //     res.status(400).json({ message: "Please fill all required fields" });
-        //     return;
-        // }
-
-        // const user = await User.findById(id).exec();
-
-        // if (!user) {
-        //     res.status(400).json({ message: "User not found" });
-        //     return;
-        // }
-
-        // const duplicate = await findDuplicate(email);
-        // if (duplicate && duplicate?._id.toString() !== id) {
-        //     res.status(409).json({ message: "Email already in use" });
-        //     return;
-        // }
-
-        // user.firstName = firstName;
-        // user.lastName = lastName;
-        // user.email = email;
-        // user.role = role;
-        // user.active = active;
-
-        // if (password) {
-        //     user.password = await bcrypt.hash(password, 10);
-        // }
-
-        // const result = await user.save();
-
-        // if (!result) {
-        //     res.status(400).json({ message: "Invalid user data received" });
-        //     return;
-        // }
-
-        // const updatedUser = await User.findById(user._id).select("-password").lean();
-        // res.status(200).json(updatedUser);
+    private updateUser = async (
+        req: Request<{}, {}, UpdateUserSchema>,
+        res: Response,
+        next: NextFunction,
+    ) => {
+        try {
+            const user = await this.UserService.updateUser(req.body);
+            return res.send(user);
+        } catch (error: any) {
+            return next(new HttpException(400, error.message));
+        }
     };
 
     // @desc    Delete a user
     // @route   DELETE /users
     // @access  Private/Admin
     private deleteUser = async (
-        req: Request<{}, {}, DeleteUserSchema["body"]>,
+        req: Request<{}, {}, DeleteUserSchema>,
         res: Response,
         next: NextFunction,
     ) => {
@@ -131,12 +102,6 @@ class UserController implements Controller {
         } catch (error: any) {
             return next(new HttpException(500, error.message));
         }
-    };
-
-    private findDuplicate = async (email: string) => {
-        throw new Error("Not implemented");
-
-        // return await User.findOne({ email }).lean().exec();
     };
 }
 
