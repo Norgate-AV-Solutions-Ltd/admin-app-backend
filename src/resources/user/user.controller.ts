@@ -2,7 +2,7 @@ import { Router, Request, Response, NextFunction } from "express";
 import Controller from "@/utils/interfaces/controller.interface";
 import UserService from "@/resources/user/user.service";
 import HttpException from "@/utils/exceptions/http.exception";
-import { CreateUserInput, createUserSchema } from "@/resources/user/user.schema";
+import { CreateUserInput, createUserSchema, getUsersSchema } from "@/resources/user/user.schema";
 import validationMiddleware from "@/middleware/validation.middleware";
 
 class UserController implements Controller {
@@ -16,7 +16,7 @@ class UserController implements Controller {
 
     private initializeRoutes(): void {
         this.router
-            .get(this.path, this.getUsers)
+            .get(this.path, validationMiddleware(getUsersSchema), this.getUsers)
             .post(this.path, validationMiddleware(createUserSchema), this.createUser)
             .put(this.path, this.updateUser)
             .delete(this.path, this.deleteUser);
@@ -43,13 +43,13 @@ class UserController implements Controller {
     // @route   POST /users
     // @access  Private/Admin
     private createUser = async (
-        req: Request<{}, {}, CreateUserInput>,
+        req: Request<{}, {}, Omit<CreateUserInput["body"], "passwordConfirmation">>,
         res: Response,
         next: NextFunction,
     ) => {
         try {
             const user = await this.UserService.createUser(req.body);
-            res.send(user);
+            return res.send(user);
         } catch (error: any) {
             return next(new HttpException(400, error.message));
         }

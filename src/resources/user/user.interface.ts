@@ -9,8 +9,6 @@ export interface CreateUserInput {
     role: UserRole;
 }
 
-export interface UpdateUserInput extends CreateUserInput {}
-
 export interface UserDocument extends CreateUserInput, Document {
     active: boolean;
     verified: boolean;

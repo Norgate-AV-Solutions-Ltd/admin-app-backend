@@ -1,6 +1,6 @@
 import { Model } from "mongoose";
 import UserModel from "@/resources/user/user.model";
-import { CreateUserInput, UpdateUserInput, UserDocument } from "@/resources/user/user.interface";
+import { CreateUserInput, UserDocument } from "@/resources/user/user.interface";
 
 class UserService {
     private user: Model<UserDocument> = UserModel;
@@ -42,11 +42,11 @@ class UserService {
         }
     }
 
-    public async updateUser(input: UpdateUserInput) {
+    public async updateUser(input: any) {
         throw new Error("Not implemented");
     }
 
-    public async deleteUser(input: UserDocument) {
+    public async deleteUser(input: any) {
         throw new Error("Not implemented");
     }
 }
