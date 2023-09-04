@@ -5,6 +5,7 @@ import App from "./app";
 import RootController from "@/resources/root/root.controller";
 import HealthcheckController from "@/resources/healthcheck/healthcheck.controller";
 import UserController from "@/resources/user/user.controller";
+import AllController from "@/resources/all/all.controller";
 import logger from "@/utils/logger";
 import validateEnv from "@/utils/validateEnv";
 
@@ -12,7 +13,12 @@ validateEnv();
 
 try {
     const app = new App(
-        [new RootController(), new HealthcheckController(), new UserController()],
+        [
+            new RootController(),
+            new HealthcheckController(),
+            new UserController(),
+            new AllController(),
+        ],
         config.get<number>("port"),
         logger,
     );
