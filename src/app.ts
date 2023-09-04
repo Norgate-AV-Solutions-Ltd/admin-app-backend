@@ -12,6 +12,7 @@ import Controller from "@/utils/interfaces/controller.interface";
 
 class App {
     public express: Application;
+    public controllers: Controller[];
     public port: number;
     public logger: any;
 
@@ -19,13 +20,14 @@ class App {
 
     constructor(controllers: Controller[], port: number, logger: any) {
         this.express = express();
+        this.controllers = controllers;
         this.port = port;
         this.logger = logger;
 
         this.logger.info(`Running in ${process.env.NODE_ENV} mode`);
 
         this.initializeMiddleware();
-        this.initializeControllers(controllers);
+        this.initializeControllers();
         this.initializeErrorHandling();
     }
 
@@ -57,10 +59,22 @@ class App {
         this.express.use(this.root, express.static(path.join(__dirname, "./public")));
     }
 
-    private initializeControllers(controllers: Controller[]): void {
-        for (const controller of controllers) {
+    private initializeControllers(): void {
+        for (const controller of this.controllers) {
             this.logger.info(`Registering resource: ${controller.path}`);
             this.express.use(this.root, controller.router);
+        }
+    }
+
+    private onAppDidStart() {
+        this.logger.info(`App is running at http://localhost:${this.port}${this.root}`);
+
+        for (const controller of this.controllers) {
+            if (!controller.onAppDidStart) {
+                continue;
+            }
+
+            controller.onAppDidStart();
         }
     }
 
@@ -75,7 +89,7 @@ class App {
             this.logger.info("Connected to MongoDB");
 
             this.express.listen(this.port, () => {
-                this.logger.info(`App is running at http://localhost:${this.port}${this.root}`);
+                this.onAppDidStart();
             });
         });
 

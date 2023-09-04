@@ -6,6 +6,7 @@ function validateEnv(): void {
             choices: ["development", "production"],
         }),
         DATABASE_URI: str(),
+        JWT_SECRET: str(),
     });
 }
 

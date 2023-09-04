@@ -17,7 +17,9 @@ class DocsController implements Controller {
 
         this.initializeMiddleware();
         this.initializeRoutes();
+    }
 
+    public onAppDidStart() {
         logger.info(
             `Documentation is available at http://localhost:${config.get<number>("port")}/api/v1${
                 this.path

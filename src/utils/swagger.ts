@@ -8,16 +8,16 @@ const options: swaggerJsdoc.Options = {
             title: "Admin API Documentation",
             version,
         },
-        components: {
-            securitySchemas: {},
-        },
-        security: [
-            {
-                bearerAuth: [],
-            },
-        ],
+        // components: {
+        //     securitySchemas: {},
+        // },
+        // security: [
+        //     {
+        //         bearerAuth: [],
+        //     },
+        // ],
     },
-    apis: ["@/resources/**/*.ts"],
+    apis: ["../resources/healthcheck/healthcheck.controller.ts"],
 };
 
 export default options;

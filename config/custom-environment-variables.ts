@@ -3,4 +3,7 @@ export default {
     db: {
         uri: "DATABASE_URI",
     },
+    jwt: {
+        secret: "JWT_SECRET",
+    },
 };

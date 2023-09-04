@@ -13,11 +13,19 @@ class HealthcheckController implements Controller {
         this.router.get(this.path, this.getHealthcheck);
     }
 
-    // @desc    Get healthcheck
-    // @route   GET /healthcheck
-    // @access  Private/Admin
+    /**
+     * @openapi
+     * /healthcheck:
+     *  get:
+     *     tags:
+     *     - Healthcheck
+     *     description: Responds if the app is up and running
+     *     responses:
+     *       200:
+     *         description: App is up and running
+     */
     private getHealthcheck(_: Request, res: Response) {
-        res.status(200).send({ message: "OK" });
+        res.send({ message: "OK" });
     }
 }
 

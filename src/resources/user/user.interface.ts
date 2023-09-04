@@ -29,5 +29,5 @@ export interface UserDocument extends CreateUserInput, Document {
     deletable: boolean;
     createdAt: Date;
     updatedAt: Date;
-    isValidPassword: (password: string) => Promise<boolean>;
+    isValidPassword: (password: string) => Promise<boolean | Error>;
 }

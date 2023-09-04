@@ -11,4 +11,7 @@ export default {
             saltWorkFactor: 10,
         },
     },
+    jwt: {
+        secret: "",
+    },
 };
