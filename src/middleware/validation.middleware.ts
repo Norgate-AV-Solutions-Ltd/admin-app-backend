@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { AnyZodObject, ZodError } from "zod";
+import { AnyZodObject } from "zod";
+import HttpException from "@/utils/exceptions/http.exception";
 
 function validationMiddleware(schema: AnyZodObject) {
     return (req: Request, res: Response, next: NextFunction) => {
@@ -12,7 +13,7 @@ function validationMiddleware(schema: AnyZodObject) {
 
             return next();
         } catch (error: any) {
-            return res.status(400).send(error.errors);
+            return next(new HttpException(400, error.errors));
         }
     };
 }
