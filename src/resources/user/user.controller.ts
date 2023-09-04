@@ -2,7 +2,14 @@ import { Router, Request, Response, NextFunction } from "express";
 import Controller from "@/utils/interfaces/controller.interface";
 import UserService from "@/resources/user/user.service";
 import HttpException from "@/utils/exceptions/http.exception";
-import { CreateUserInput, createUserSchema, getUsersSchema } from "@/resources/user/user.schema";
+import {
+    GetUsersSchema,
+    getUsersSchema,
+    CreateUserSchema,
+    createUserSchema,
+    DeleteUserSchema,
+    deleteUserSchema,
+} from "@/resources/user/user.schema";
 import validationMiddleware from "@/middleware/validation.middleware";
 
 class UserController implements Controller {
@@ -16,16 +23,21 @@ class UserController implements Controller {
 
     private initializeRoutes(): void {
         this.router
-            .get(this.path, validationMiddleware(getUsersSchema), this.getUsers)
-            .post(this.path, validationMiddleware(createUserSchema), this.createUser)
-            .put(this.path, this.updateUser)
-            .delete(this.path, this.deleteUser);
+            .route(this.path)
+            .get(validationMiddleware(getUsersSchema), this.getUsers)
+            .post(validationMiddleware(createUserSchema), this.createUser)
+            .patch(this.updateUser)
+            .delete(validationMiddleware(deleteUserSchema), this.deleteUser);
     }
 
     // @desc    Get all users
     // @route   GET /users
     // @access  Private/Admin
-    private getUsers = async (_: Request, res: Response, next: NextFunction) => {
+    private getUsers = async (
+        _: Request<{}, {}, GetUsersSchema>,
+        res: Response,
+        next: NextFunction,
+    ) => {
         try {
             const users = await this.UserService.getUsers();
 
@@ -43,7 +55,7 @@ class UserController implements Controller {
     // @route   POST /users
     // @access  Private/Admin
     private createUser = async (
-        req: Request<{}, {}, Omit<CreateUserInput["body"], "passwordConfirmation">>,
+        req: Request<{}, {}, Omit<CreateUserSchema["body"], "passwordConfirmation">>,
         res: Response,
         next: NextFunction,
     ) => {
@@ -105,33 +117,20 @@ class UserController implements Controller {
     // @desc    Delete a user
     // @route   DELETE /users
     // @access  Private/Admin
-    private deleteUser = async (req: Request, res: Response, next: NextFunction) => {
-        throw new Error("Not implemented");
+    private deleteUser = async (
+        req: Request<{}, {}, DeleteUserSchema["body"]>,
+        res: Response,
+        next: NextFunction,
+    ) => {
+        try {
+            const deletedUser = await this.UserService.deleteUser(req.body);
 
-        // const { id } = req.body;
-
-        // if (!id) {
-        //     res.status(400).json({ message: "User ID Required" });
-        //     return;
-        // }
-
-        // const user = await User.findById(id).exec();
-
-        // if (!user) {
-        //     res.status(400).json({ message: "User not found" });
-        //     return;
-        // }
-
-        // const deletedUser = await user.deleteOne();
-
-        // if (!deletedUser) {
-        //     res.status(400).json({ message: "Invalid user data received" });
-        //     return;
-        // }
-
-        // res.status(200).json({
-        //     message: `User ${deletedUser.email} with ID ${deletedUser.id} deleted`,
-        // });
+            return res.send({
+                message: `User ${deletedUser.email} with ID ${deletedUser.id} deleted`,
+            });
+        } catch (error: any) {
+            return next(new HttpException(500, error.message));
+        }
     };
 
     private findDuplicate = async (email: string) => {

@@ -9,6 +9,10 @@ export interface CreateUserInput {
     role: UserRole;
 }
 
+export interface DeleteUserInput {
+    id: string;
+}
+
 export interface UserDocument extends CreateUserInput, Document {
     active: boolean;
     verified: boolean;

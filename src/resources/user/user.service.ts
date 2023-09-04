@@ -1,6 +1,6 @@
 import { Model } from "mongoose";
 import UserModel from "@/resources/user/user.model";
-import { CreateUserInput, UserDocument } from "@/resources/user/user.interface";
+import { CreateUserInput, DeleteUserInput, UserDocument } from "@/resources/user/user.interface";
 
 class UserService {
     private user: Model<UserDocument> = UserModel;
@@ -9,9 +9,9 @@ class UserService {
         try {
             const users = await this.user.find().select("-password").lean();
 
-            // if (!users.length) {
-            //     throw new Error("No users found");
-            // }
+            if (!users.length) {
+                throw new Error("No users found");
+            }
 
             return users;
         } catch (error: any) {
@@ -46,8 +46,28 @@ class UserService {
         throw new Error("Not implemented");
     }
 
-    public async deleteUser(input: any) {
-        throw new Error("Not implemented");
+    public async deleteUser(input: DeleteUserInput) {
+        try {
+            const user = await this.user.findById(input.id).exec();
+
+            if (!user) {
+                throw new Error("User not found");
+            }
+
+            if (!user.deletable) {
+                throw new Error("This user cannot be deleted");
+            }
+
+            const deletedUser = await user.deleteOne();
+
+            if (!deletedUser) {
+                throw new Error("Error deleting user");
+            }
+
+            return deletedUser;
+        } catch (error: any) {
+            throw new Error(error);
+        }
     }
 }
 

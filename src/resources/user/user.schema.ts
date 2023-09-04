@@ -7,9 +7,11 @@ export const getUsersSchema = z.object({
 export const createUserSchema = z.object({
     body: z
         .object({
-            name: z.string({
-                required_error: "Name is required",
-            }).nonempty("Name cannot be empty"),
+            name: z
+                .string({
+                    required_error: "Name is required",
+                })
+                .nonempty("Name cannot be empty"),
             email: z
                 .string({
                     required_error: "Email is required",
@@ -31,5 +33,18 @@ export const createUserSchema = z.object({
         }),
 });
 
-export type GetUsersInput = TypeOf<typeof getUsersSchema>;
-export type CreateUserInput = Omit<TypeOf<typeof createUserSchema>, "body.passwordConfirmation">;
+export const deleteUserSchema = z.object({
+    body: z
+        .object({
+            id: z
+                .string({
+                    required_error: "Id is required",
+                })
+                .nonempty("Id cannot be empty"),
+        })
+        .strict(),
+});
+
+export type GetUsersSchema = TypeOf<typeof getUsersSchema>;
+export type CreateUserSchema = Omit<TypeOf<typeof createUserSchema>, "body.passwordConfirmation">;
+export type DeleteUserSchema = TypeOf<typeof deleteUserSchema>;
