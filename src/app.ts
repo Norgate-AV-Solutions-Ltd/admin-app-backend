@@ -67,14 +67,15 @@ class App {
     }
 
     private onAppDidStart() {
-        this.logger.info(`App is running at http://localhost:${this.port}${this.root}`);
+        const url = `http://localhost:${this.port}${this.root}`;
+        this.logger.info(`App is running at ${url}`);
 
         for (const controller of this.controllers) {
             if (!controller.onAppDidStart) {
                 continue;
             }
 
-            controller.onAppDidStart();
+            controller.onAppDidStart({ url });
         }
     }
 

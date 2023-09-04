@@ -3,6 +3,7 @@ import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import config from "config";
 import Controller from "@/src/utils/interfaces/controller.interface";
+import { AppInfo } from "@/utils/interfaces/app.interface";
 import logger from "@/src/utils/logger";
 
 class DocsController implements Controller {
@@ -19,12 +20,8 @@ class DocsController implements Controller {
         this.initializeRoutes();
     }
 
-    public onAppDidStart() {
-        logger.info(
-            `Documentation is available at http://localhost:${config.get<number>("port")}/api/v1${
-                this.path
-            }`,
-        );
+    public onAppDidStart({ url }: AppInfo) {
+        logger.info(`Docs are available at ${url}${this.path}`);
     }
 
     private initializeMiddleware() {
