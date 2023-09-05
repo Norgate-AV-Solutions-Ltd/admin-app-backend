@@ -14,17 +14,18 @@ import swaggerOptions from "@/utils/swagger";
 validateEnv();
 
 try {
-    const app = new App(
-        [
+    const app = new App({
+        controllers: [
             new RootController(),
             new HealthcheckController(),
             new UserController(),
             new DocsController(swaggerOptions),
             new AllController(),
         ],
-        config.get<number>("port"),
+        port: config.get<number>("port"),
+        apiRoot: config.get<string>("api.root"),
         logger,
-    );
+    });
 
     app.start();
 } catch (error: any) {

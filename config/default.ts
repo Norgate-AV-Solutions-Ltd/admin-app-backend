@@ -14,4 +14,7 @@ export default {
     jwt: {
         secret: "",
     },
+    api: {
+        root: "/api/v1",
+    },
 };
