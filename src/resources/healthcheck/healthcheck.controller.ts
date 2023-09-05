@@ -10,23 +10,12 @@ class HealthcheckController implements Controller {
     }
 
     private initializeRoutes(): void {
-        /**
-         * @openapi
-         *   /healthcheck:
-         *     get:
-         *       tags:
-         *         - Healthcheck
-         *       description: Responds if the app is up and running
-         *       responses:
-         *         200:
-         *           description: App is up and running
-         */
         this.router.get(this.path, this.getHealthcheck);
     }
 
     /**
      * @openapi
-     *   /healthcheck:
+     *   '/api/v1/healthcheck':
      *     get:
      *       tags:
      *         - Healthcheck
