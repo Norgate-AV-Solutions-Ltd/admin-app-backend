@@ -15,7 +15,7 @@ class HealthcheckController implements Controller {
 
     /**
      * @openapi
-     *   '/api/v1/healthcheck':
+     *   /healthcheck:
      *     get:
      *       tags:
      *         - Healthcheck

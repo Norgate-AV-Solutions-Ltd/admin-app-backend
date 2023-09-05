@@ -1,5 +1,9 @@
 import swaggerJsdoc from "swagger-jsdoc";
+import config from "config";
 import { version } from "@/package.json";
+
+const apiRoot = config.get<string>("api.root") || "/";
+const port = config.get<number>("port");
 
 const options: swaggerJsdoc.Options = {
     failOnErrors: true,
@@ -23,15 +27,13 @@ const options: swaggerJsdoc.Options = {
                 bearerAuth: [],
             },
         ],
-        // servers: [
-        //     {
-        //         url: "https://localhost:3500/api/v1",
-        //     },
-        // ],
+        servers: [
+            {
+                url: `http://localhost:${port}${apiRoot}`,
+            },
+        ],
     },
-    // host: "https://localhost:3500",
-    // basePath: "/api/v1",
-    apis: ["./src/resources/healthcheck/healthcheck.controller.ts"],
+    apis: ["./src/resources/**/*.ts"],
 };
 
 export default options;
