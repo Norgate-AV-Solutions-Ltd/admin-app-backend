@@ -1,7 +1,7 @@
 export default {
     port: 3500,
     db: {
-        uri: "mongodb://localhost:27017/db",
+        uri: "",
     },
     cors: {
         origins: ["http://localhost:3000"],
