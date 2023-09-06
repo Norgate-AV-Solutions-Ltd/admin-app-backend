@@ -1,6 +1,3 @@
 {
-    "entry": ["src/index.ts"],
-    "format": ["cjs"],
-    "clean": true,
-    "dts": false
+    "entry": ["src/index.ts"]
 }
