@@ -1,4 +1,4 @@
-import express, { Application } from "express";
+import express, { Application, Request, Response } from "express";
 import path from "path";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
@@ -6,11 +6,13 @@ import cors from "cors";
 import compression from "compression";
 import mongoose from "mongoose";
 import config from "config";
+import responseTime from "response-time";
 import errorMiddleware from "@/middleware/error.middleware";
 import loggerMiddleware from "@/middleware/logger.middleware";
 import Controller from "@/utils/interfaces/controller.interface";
 import { AppOptions } from "@/utils/interfaces/app.interface";
 import options from "./utils/swagger";
+import { restResponseTimeHistogram } from "@/utils/metrics";
 
 class App {
     private readonly express: Application = express();
@@ -58,6 +60,22 @@ class App {
         this.express.use(express.urlencoded({ extended: false }));
         this.express.use(compression());
         this.express.use(this.apiRoot, express.static(path.join(__dirname, "./public")));
+        this.express.use(
+            responseTime((req: Request, res: Response, time: number) => {
+                if (!req?.route?.path) {
+                    return;
+                }
+
+                restResponseTimeHistogram.observe(
+                    {
+                        method: req.method,
+                        route: req.route.path,
+                        status_code: res.statusCode,
+                    },
+                    time / 1000,
+                );
+            }),
+        );
     }
 
     private initializeControllers(): void {

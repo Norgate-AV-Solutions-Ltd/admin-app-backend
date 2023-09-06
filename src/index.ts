@@ -10,6 +10,7 @@ import DocsController from "./resources/docs/docs.controller";
 import logger from "@/utils/logger";
 import validateEnv from "@/utils/validateEnv";
 import swaggerOptions from "@/utils/swagger";
+import { startMetricServer } from "@/utils/metrics";
 
 validateEnv();
 
@@ -28,6 +29,8 @@ try {
     });
 
     app.start();
+
+    startMetricServer();
 } catch (error: any) {
     logger.error(error, "Error starting application");
     process.exit(1);
