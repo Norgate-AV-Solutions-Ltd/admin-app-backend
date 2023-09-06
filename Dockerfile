@@ -8,6 +8,6 @@ RUN yarn install --frozen-lockfile && yarn cache clean
 
 COPY . .
 
-EXPOSE 3500
+RUN yarn build
 
-CMD ["yarn", "start"]
+CMD ["node", "dist/index.js"]
