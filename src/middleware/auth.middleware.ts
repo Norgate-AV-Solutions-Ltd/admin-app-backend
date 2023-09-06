@@ -1,12 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { verifyToken } from "../utils/token";
+import config from "config";
+import TokenHelper from "../utils/token";
 import UserModel from "../resources/user/user.model";
 import Token from "../utils/interfaces/token.interface";
 import HttpException from "../utils/exceptions/http.exception";
 
 async function authMiddleware(
-    req: Request,
+    req: any,
     res: Response,
     next: NextFunction,
 ): Promise<Response | void> {
@@ -23,19 +24,22 @@ async function authMiddleware(
     }
 
     try {
-        const payload: Token | jwt.JsonWebTokenError = await verifyToken(token);
+        const payload: Token | jwt.JsonWebTokenError = await TokenHelper.verify(
+            token,
+            config.get<string>("jwt.access.key.public"),
+        );
 
         if (payload instanceof jwt.JsonWebTokenError) {
             throw new Error("Unauthorized");
         }
 
-        const user = await UserModel.findById(payload.id).select("-password").lean();
+        const user = await UserModel.findById(payload.user).select("-password").lean();
 
         if (!user) {
             throw new Error("Unauthorized");
         }
 
-        res.locals.user = user;
+        req.user = user;
 
         return next();
     } catch (error: any) {

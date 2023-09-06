@@ -4,6 +4,7 @@ import App from "./app";
 import RootController from "./resources/root/root.controller";
 import HealthcheckController from "./resources/healthcheck/healthcheck.controller";
 import UserController from "./resources/user/user.controller";
+import SessionController from "./resources/session/session.controller";
 import AllController from "./resources/all/all.controller";
 import DocsController from "./resources/docs/docs.controller";
 import logger from "./utils/logger";
@@ -19,6 +20,7 @@ try {
             new RootController(),
             new HealthcheckController(),
             new UserController(),
+            new SessionController(),
             new DocsController(swaggerOptions),
             new AllController(),
         ],

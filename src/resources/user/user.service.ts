@@ -1,11 +1,12 @@
 import { Model } from "mongoose";
 import UserModel from "./user.model";
 import { CreateUserInput, UpdateUserInput, DeleteUserInput, UserDocument } from "./user.interface";
+import Service from "../../utils/interfaces/service.interface";
 
-class UserService {
-    private user: Model<UserDocument> = UserModel;
+class UserService implements Service {
+    private readonly user: Model<UserDocument> = UserModel;
 
-    public async getUsers() {
+    public async read() {
         try {
             const users = await this.user.find().select("-password").lean();
 
@@ -19,7 +20,7 @@ class UserService {
         }
     }
 
-    public async createUser(input: CreateUserInput) {
+    public async create(input: CreateUserInput) {
         try {
             const user = await this.user.create(input);
             return await this.user.findById(user._id).select("-password").lean();
@@ -28,7 +29,7 @@ class UserService {
         }
     }
 
-    public async updateUser(input: UpdateUserInput) {
+    public async update(input: UpdateUserInput) {
         try {
             const user = await this.user.findById(input.id).exec();
 
@@ -71,7 +72,7 @@ class UserService {
         }
     }
 
-    public async deleteUser(input: DeleteUserInput) {
+    public async delete(input: DeleteUserInput) {
         try {
             const user = await this.user.findById(input.id).exec();
 
@@ -90,6 +91,24 @@ class UserService {
             }
 
             return deletedUser;
+        } catch (error: any) {
+            throw new Error(error);
+        }
+    }
+
+    public async validatePassword({ email, password }: { email: string; password: string }) {
+        try {
+            const user = await this.user.findOne({ email });
+
+            if (!user) {
+                return false;
+            }
+
+            if (!(await user.isValidPassword(password))) {
+                return false;
+            }
+
+            return await this.user.findById(user._id).select("-password").lean();
         } catch (error: any) {
             throw new Error(error);
         }

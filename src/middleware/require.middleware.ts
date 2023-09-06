@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import HttpException from "../utils/exceptions/http.exception";
 
-function requireUser(_: Request, res: Response, next: NextFunction) {
+function requireUserMiddleware(_: Request, res: Response, next: NextFunction) {
     const user = res.locals.user;
 
     if (!user) {
@@ -11,4 +11,4 @@ function requireUser(_: Request, res: Response, next: NextFunction) {
     return next();
 }
 
-export default requireUser;
+export default requireUserMiddleware;

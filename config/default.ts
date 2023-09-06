@@ -1,4 +1,5 @@
 export default {
+    host: "localhost",
     port: 3500,
     db: {
         uri: "",
@@ -12,7 +13,21 @@ export default {
         },
     },
     jwt: {
-        secret: "",
+        algorithm: "RS256",
+        access: {
+            ttl: "15m",
+            key: {
+                private: "",
+                public: "",
+            },
+        },
+        refresh: {
+            ttl: "7d",
+            key: {
+                private: "",
+                public: "",
+            },
+        },
     },
     api: {
         root: "/api/v1",

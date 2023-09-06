@@ -1,40 +1,99 @@
 import { Request, Response, NextFunction, Router } from "express";
+import config from "config";
 import Controller from "../../utils/interfaces/controller.interface";
 import SessionService from "./session.service";
+import UserService from "../user/user.service";
+import validationMiddleware from "../../middleware/validation.middleware";
+import requireUserMiddleware from "../../middleware/require.middleware";
+import { CreateSessionSchema, createSessionSchema } from "./session.schema";
+import HttpException from "../../utils/exceptions/http.exception";
+import TokenService from "../../utils/token";
+import cookieOptions from "../../utils/cookie";
 
 class SessionController implements Controller {
-    public path = "/session";
+    public path = "/sessions";
     public router = Router();
     private SessionService = new SessionService();
+    private UserService = new UserService();
 
     constructor() {
+        this.initializeMiddleware();
         this.initializeRoutes();
     }
 
+    private initializeMiddleware() {}
+
     private initializeRoutes() {
-        // this.router.post(`${this.path}/login`, this.login);
-        // this.router.post(`${this.path}/logout`, this.logout);
+        this.router
+            .route(this.path)
+            .post(validationMiddleware(createSessionSchema), this.createSession)
+            .delete(requireUserMiddleware, this.deleteSession);
     }
 
-    // private login = async (req: Request, res: Response, next: NextFunction) => {
-    //     const loginData: LoginDto = req.body;
-    //     try {
-    //         const { cookie, user } = await this.SessionService.login(loginData);
-    //         res.setHeader("Set-Cookie", [cookie]);
-    //         res.send(user);
-    //     } catch (error) {
-    //         next(error);
-    //     }
-    // };
+    private createSession = async (
+        req: Request<{}, {}, CreateSessionSchema>,
+        res: Response,
+        next: NextFunction,
+    ) => {
+        const user = await this.UserService.validatePassword(req.body);
 
-    // private logout = async (req: RequestWithUser, res: Response, next: NextFunction) => {
-    //     const userData: User = req.user;
-    //     try {
-    //         const { cookie, user } = await this.SessionService.logout(userData);
-    //         res.setHeader("Set-Cookie", [cookie]);
-    //         res.send(user);
-    //     } catch (error) {
-    //         next(error);
-    //     }
-    // };
+        if (!user) {
+            return next(new HttpException(401, "Invalid email or password"));
+        }
+
+        const session = await this.SessionService.create(user._id, req.get("user-agent") || "");
+
+        if (!session) {
+            return next(new HttpException(500, "Error creating session"));
+        }
+
+        const accessToken = TokenService.create(
+            TokenService.getTokenPayload(user, session),
+            config.get<string>("jwt.access.key.private"),
+            {
+                expiresIn: "15m",
+            },
+        );
+
+        const refreshToken = TokenService.create(
+            TokenService.getTokenPayload(user, session),
+            config.get<string>("jwt.refresh.key.private"),
+            {
+                expiresIn: "7d",
+            },
+        );
+
+        res.cookie("jwt", refreshToken, cookieOptions);
+
+        return res.send({ accessToken });
+    };
+
+    private deleteSession = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const id = res.locals.user.session;
+
+            if (!id) {
+                return next(new HttpException(404, "Session not found"));
+            }
+
+            const session = await this.SessionService.update(
+                {
+                    _id: id,
+                },
+                { valid: false },
+            );
+
+            if (!session) {
+                return next(new HttpException(500, "Error deleting session"));
+            }
+
+            return res.send({
+                accessToken: null,
+            });
+        } catch (error: any) {
+            return next(new HttpException(500, error.message));
+        }
+    };
 }
+
+export default SessionController;

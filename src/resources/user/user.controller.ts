@@ -20,8 +20,11 @@ class UserController implements Controller {
     private UserService = new UserService();
 
     constructor() {
+        this.initializeMiddleware();
         this.initializeRoutes();
     }
+
+    private initializeMiddleware() {}
 
     private initializeRoutes(): void {
         this.router
@@ -41,7 +44,7 @@ class UserController implements Controller {
         next: NextFunction,
     ) => {
         try {
-            const users = await this.UserService.getUsers();
+            const users = await this.UserService.read();
 
             if (!users.length) {
                 return next(new HttpException(404, "No users found"));
@@ -62,7 +65,7 @@ class UserController implements Controller {
         next: NextFunction,
     ) => {
         try {
-            const user = await this.UserService.createUser(req.body);
+            const user = await this.UserService.create(req.body);
             return res.send(user);
         } catch (error: any) {
             return next(new HttpException(400, error.message));
@@ -78,7 +81,7 @@ class UserController implements Controller {
         next: NextFunction,
     ) => {
         try {
-            const user = await this.UserService.updateUser(req.body);
+            const user = await this.UserService.update(req.body);
             return res.send(user);
         } catch (error: any) {
             return next(new HttpException(400, error.message));
@@ -94,7 +97,7 @@ class UserController implements Controller {
         next: NextFunction,
     ) => {
         try {
-            const deletedUser = await this.UserService.deleteUser(req.body);
+            const deletedUser = await this.UserService.delete(req.body);
 
             return res.send({
                 message: `User ${deletedUser.email} with ID ${deletedUser.id} deleted`,

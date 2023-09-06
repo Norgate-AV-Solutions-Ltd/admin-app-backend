@@ -1,8 +1,9 @@
 import { Schema } from "mongoose";
 
-interface Token extends Object {
-    id: Schema.Types.ObjectId;
-    expiresIn: number;
+interface TokenPayload extends Object {
+    user: Schema.Types.ObjectId;
+    session: Schema.Types.ObjectId;
+    expiresIn?: number | undefined;
 }
 
-export default Token;
+export default TokenPayload;
