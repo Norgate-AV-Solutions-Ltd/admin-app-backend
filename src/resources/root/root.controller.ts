@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import path from "path";
-import Controller from "@/utils/interfaces/controller.interface";
+import Controller from "../../utils/interfaces/controller.interface";
 
 class RootController implements Controller {
     public path = "/";

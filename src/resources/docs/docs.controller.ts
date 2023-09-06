@@ -1,10 +1,9 @@
 import { Request, Response, Router } from "express";
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
-import config from "config";
-import Controller from "@/src/utils/interfaces/controller.interface";
-import { AppInfo } from "@/utils/interfaces/app.interface";
-import logger from "@/src/utils/logger";
+import Controller from "../../utils/interfaces/controller.interface";
+import { AppInfo } from "../../utils/interfaces/app.interface";
+import logger from "../../utils/logger";
 
 class DocsController implements Controller {
     public path = "/docs";

@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import Controller from "@/utils/interfaces/controller.interface";
+import Controller from "../../utils/interfaces/controller.interface";
 
 class HealthcheckController implements Controller {
     public path = "/healthcheck";

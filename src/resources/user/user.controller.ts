@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from "express";
-import Controller from "@/utils/interfaces/controller.interface";
-import UserService from "@/resources/user/user.service";
-import HttpException from "@/utils/exceptions/http.exception";
+import Controller from "../../utils/interfaces/controller.interface";
+import UserService from "./user.service";
+import HttpException from "../../utils/exceptions/http.exception";
 import {
     GetUsersSchema,
     getUsersSchema,
@@ -11,8 +11,8 @@ import {
     updateUserSchema,
     DeleteUserSchema,
     deleteUserSchema,
-} from "@/resources/user/user.schema";
-import validationMiddleware from "@/middleware/validation.middleware";
+} from "./user.schema";
+import validationMiddleware from "../../middleware/validation.middleware";
 
 class UserController implements Controller {
     public path = "/users";

@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { AnyZodObject } from "zod";
-import HttpException from "@/utils/exceptions/http.exception";
-import logger from "@/utils/logger";
+import HttpException from "../utils/exceptions/http.exception";
 
 function validationMiddleware(schema: AnyZodObject) {
     return (req: Request, _: Response, next: NextFunction) => {

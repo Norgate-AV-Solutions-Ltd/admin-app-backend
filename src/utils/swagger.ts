@@ -1,6 +1,6 @@
 import swaggerJsdoc from "swagger-jsdoc";
 import config from "config";
-import { version } from "@/package.json";
+import { version } from "../../package.json";
 
 const apiRoot = config.get<string>("api.root") || "/";
 const port = config.get<number>("port");

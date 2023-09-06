@@ -7,12 +7,11 @@ import compression from "compression";
 import mongoose from "mongoose";
 import config from "config";
 import responseTime from "response-time";
-import errorMiddleware from "@/middleware/error.middleware";
-import loggerMiddleware from "@/middleware/logger.middleware";
-import Controller from "@/utils/interfaces/controller.interface";
-import { AppOptions } from "@/utils/interfaces/app.interface";
-import options from "./utils/swagger";
-import { restResponseTimeHistogram } from "@/utils/metrics";
+import errorMiddleware from "./middleware/error.middleware";
+import loggerMiddleware from "./middleware/logger.middleware";
+import Controller from "./utils/interfaces/controller.interface";
+import { AppOptions } from "./utils/interfaces/app.interface";
+import { restResponseTimeHistogram } from "./utils/metrics";
 
 class App {
     private readonly express: Application = express();

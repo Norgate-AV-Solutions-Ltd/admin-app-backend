@@ -1,6 +1,6 @@
 import { Model } from "mongoose";
-import { SessionDocument } from "@/resources/session/session.interface";
-import SessionModel from "@/resources/session/session.model";
+import { SessionDocument } from "./session.interface";
+import SessionModel from "./session.model";
 
 class SessionService {
     private session: Model<SessionDocument> = SessionModel;

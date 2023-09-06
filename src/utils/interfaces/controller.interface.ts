@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { AppInfo } from "@/utils/interfaces/app.interface";
+import { AppInfo } from "./app.interface";
 
 interface Controller {
     path: string;

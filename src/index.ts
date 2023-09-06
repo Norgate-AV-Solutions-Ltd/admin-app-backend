@@ -1,16 +1,15 @@
 import "dotenv/config";
-import "module-alias/register";
 import config from "config";
 import App from "./app";
-import RootController from "@/resources/root/root.controller";
-import HealthcheckController from "@/resources/healthcheck/healthcheck.controller";
-import UserController from "@/resources/user/user.controller";
-import AllController from "@/resources/all/all.controller";
+import RootController from "./resources/root/root.controller";
+import HealthcheckController from "./resources/healthcheck/healthcheck.controller";
+import UserController from "./resources/user/user.controller";
+import AllController from "./resources/all/all.controller";
 import DocsController from "./resources/docs/docs.controller";
-import logger from "@/utils/logger";
-import validateEnv from "@/utils/validateEnv";
-import swaggerOptions from "@/utils/swagger";
-import { startMetricServer } from "@/utils/metrics";
+import logger from "./utils/logger";
+import validateEnv from "./utils/validateEnv";
+import swaggerOptions from "./utils/swagger";
+import { startMetricServer } from "./utils/metrics";
 
 validateEnv();
 

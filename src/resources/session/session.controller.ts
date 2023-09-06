@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction, Router } from "express";
-import Controller from "@/utils/interfaces/controller.interface";
-import SessionService from "@/resources/session/session.service";
+import Controller from "../../utils/interfaces/controller.interface";
+import SessionService from "./session.service";
 
 class SessionController implements Controller {
     public path = "/session";

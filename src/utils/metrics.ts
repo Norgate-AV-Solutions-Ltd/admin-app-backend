@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import client from "prom-client";
-import logger from "@/utils/logger";
+import logger from "./logger";
 
 const app = express();
 

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { UserDocument } from "@/resources/user/user.interface";
+import { UserDocument } from "./../user/user.interface";
 
 export interface SessionDocument extends mongoose.Document {
     user: UserDocument["_id"];

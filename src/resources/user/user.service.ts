@@ -1,11 +1,6 @@
 import { Model } from "mongoose";
-import UserModel from "@/resources/user/user.model";
-import {
-    CreateUserInput,
-    UpdateUserInput,
-    DeleteUserInput,
-    UserDocument,
-} from "@/resources/user/user.interface";
+import UserModel from "./user.model";
+import { CreateUserInput, UpdateUserInput, DeleteUserInput, UserDocument } from "./user.interface";
 
 class UserService {
     private user: Model<UserDocument> = UserModel;

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import HttpException from "@/utils/exceptions/http.exception";
+import HttpException from "../utils/exceptions/http.exception";
 
 function requireUser(_: Request, res: Response, next: NextFunction) {
     const user = res.locals.user;

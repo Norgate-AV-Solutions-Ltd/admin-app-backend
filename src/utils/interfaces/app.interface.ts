@@ -1,3 +1,5 @@
+import Controller from "./controller.interface";
+
 export interface AppInfo {
     url: string;
 }

@@ -1,7 +1,7 @@
 import mongoose, { CallbackWithoutResultAndOptionalError } from "mongoose";
 import bcrypt from "bcrypt";
 import config from "config";
-import { UserDocument } from "@/resources/user/user.interface";
+import { UserDocument } from "./user.interface";
 
 const userSchema = new mongoose.Schema(
     {
