@@ -8,8 +8,8 @@ export const loginLimitMiddleware = rateLimit({
     max: 5,
     message: "Too many login attempts from this IP, please try again after 60 seconds",
     handler: (req: Request, _: Response, next: NextFunction, options: Options) => {
-        logger.warn(
-            `Too many requests: ${options.message.message} : ${req.ip} : ${req.method} ${req.url}}`,
+        logger.error(
+            `Too many requests: ${options.message.message} : ${req.ip} : ${req.method} ${req.url}`,
         );
         return next(new HttpException(options.statusCode, options.message));
     },
