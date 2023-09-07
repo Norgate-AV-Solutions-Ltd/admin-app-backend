@@ -56,7 +56,7 @@ class SessionController implements Controller {
             TokenService.getTokenPayload(user, session),
             config.get<string>("jwt.access.key.private"),
             {
-                expiresIn: "15m",
+                expiresIn: config.get<string>("jwt.access.ttl"),
             },
         );
 
@@ -64,7 +64,7 @@ class SessionController implements Controller {
             TokenService.getTokenPayload(user, session),
             config.get<string>("jwt.refresh.key.private"),
             {
-                expiresIn: "7d",
+                expiresIn: config.get<string>("jwt.refresh.ttl"),
             },
         );
 
