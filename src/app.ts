@@ -9,6 +9,7 @@ import config from "config";
 import responseTime from "response-time";
 import errorMiddleware from "./middleware/error.middleware";
 import loggerMiddleware from "./middleware/logger.middleware";
+import deserializeUserMiddleware from "./middleware/deserialize.middleware";
 import Controller from "./utils/interfaces/controller.interface";
 import { AppInfo, AppOptions } from "./utils/interfaces/app.interface";
 import { MetricsService } from "./utils/metrics";
@@ -58,6 +59,7 @@ class App {
         this.express.use(cookieParser());
         this.express.use(express.urlencoded({ extended: false }));
         this.express.use(compression());
+        this.express.use(deserializeUserMiddleware);
         this.express.use(this.apiRoot, express.static(path.join(__dirname, "./public")));
         this.express.use(
             responseTime((req: Request, res: Response, time: number) => {

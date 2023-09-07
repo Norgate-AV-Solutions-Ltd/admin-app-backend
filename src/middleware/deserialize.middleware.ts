@@ -4,9 +4,20 @@ import config from "config";
 import TokenHelper from "../utils/token";
 import HttpException from "../utils/exceptions/http.exception";
 import UserModel from "../resources/user/user.model";
+import TokenPayload from "../utils/interfaces/token.interface";
 
-async function deserializeUserMiddleware(req: any, res: Response, next: NextFunction) {
-    const accessToken = req.headers.authorization?.split("Bearer ")[1];
+async function deserializeUserMiddleware(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+): Promise<Response | void> {
+    const bearer = req.headers.authorization;
+
+    if (!bearer?.startsWith("Bearer ")) {
+        return next();
+    }
+
+    const accessToken = bearer.split(" ")[1]?.trim();
 
     if (!accessToken) {
         return next();
@@ -19,7 +30,7 @@ async function deserializeUserMiddleware(req: any, res: Response, next: NextFunc
     }
 
     try {
-        const payload = await TokenHelper.verify(
+        const payload: TokenPayload | jwt.JsonWebTokenError = await TokenHelper.verify(
             accessToken,
             config.get<string>("jwt.access.key.public"),
         );
@@ -34,7 +45,7 @@ async function deserializeUserMiddleware(req: any, res: Response, next: NextFunc
             throw new Error("Unauthorized");
         }
 
-        req.user = user;
+        res.locals.user = user;
 
         return next();
     } catch (error: any) {
