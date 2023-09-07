@@ -1015,6 +1015,11 @@ execa@^5.0.0:
     signal-exit "^3.0.3"
     strip-final-newline "^2.0.0"
 
+express-rate-limit@^6.11.0:
+  version "6.11.0"
+  resolved "https://registry.yarnpkg.com/express-rate-limit/-/express-rate-limit-6.11.0.tgz#bbb474c9765e5027ac92683a494e06162ea7c542"
+  integrity sha512-H9afltGTaEZcvenAB5LFgb/ysTMHUzMxoB3TJM6UHP5FtAP1p2+heMj1xwTei54Zm4I9I/2qsS5m+XrdKQp/Hw==
+
 express@^4.18.2:
   version "4.18.2"
   resolved "https://registry.yarnpkg.com/express/-/express-4.18.2.tgz#3fabe08296e930c796c19e3c516979386ba9fd59"

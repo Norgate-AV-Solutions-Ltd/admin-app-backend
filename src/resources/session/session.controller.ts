@@ -5,6 +5,7 @@ import SessionService from "./session.service";
 import UserService from "../user/user.service";
 import validationMiddleware from "../../middleware/validation.middleware";
 import requireUserMiddleware from "../../middleware/require.middleware";
+import loginLimitMiddleware from "../../middleware/limit.middleware";
 import { CreateSessionSchema, createSessionSchema } from "./session.schema";
 import HttpException from "../../utils/exceptions/http.exception";
 import TokenService from "../../utils/token";
@@ -26,7 +27,11 @@ class SessionController implements Controller {
     private initializeRoutes() {
         this.router
             .route(this.path)
-            .post(validationMiddleware(createSessionSchema), this.createSession)
+            .post(
+                loginLimitMiddleware,
+                validationMiddleware(createSessionSchema),
+                this.createSession,
+            )
             .delete(requireUserMiddleware, this.deleteSession);
     }
 
