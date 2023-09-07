@@ -14,9 +14,9 @@ class SessionService implements ApiService {
         }
     }
 
-    public async read() {
+    public async read(query: FilterQuery<SessionDocument>) {
         try {
-            throw new Error("Not implemented");
+            return this.session.find(query).lean();
         } catch (error: any) {
             throw new Error(error);
         }

@@ -10,6 +10,7 @@ import { CreateSessionSchema, createSessionSchema } from "./session.schema";
 import HttpException from "../../utils/exceptions/http.exception";
 import TokenService from "../../utils/token";
 import cookieOptions from "../../utils/cookie";
+import logger from "../../utils/logger";
 
 class SessionController implements Controller {
     public readonly path = "/sessions";
@@ -26,13 +27,14 @@ class SessionController implements Controller {
 
     private initializeRoutes(): void {
         this.router
-            .route(this.path)
             .post(
+                `${this.path}/login`,
                 loginLimitMiddleware,
                 validationMiddleware(createSessionSchema),
                 this.createSession,
             )
-            .delete(requireUserMiddleware, this.deleteSession);
+            .get(`${this.path}`, requireUserMiddleware, this.getSessions)
+            .delete(`${this.path}/logout`, requireUserMiddleware, this.deleteSession);
     }
 
     private createSession = async (
@@ -68,17 +70,33 @@ class SessionController implements Controller {
             },
         );
 
-        res.cookie("jwt", refreshToken, cookieOptions);
+        return res.cookie("jwt", refreshToken, cookieOptions).send({ accessToken });
+    };
 
-        return res.send({ accessToken });
+    private getSessions = async (_: Request, res: Response, next: NextFunction) => {
+        try {
+            const sessions = await this.SessionService.read({
+                user: res.locals.user._id,
+                valid: true,
+            });
+
+            if (!sessions.length) {
+                return res.status(204).send("No sessions found");
+            }
+
+            return res.send(sessions);
+        } catch (error: any) {
+            return next(new HttpException(500, error.message));
+        }
     };
 
     private deleteSession = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const id = res.locals.user.session;
+            const cookies = req.cookies;
 
-            if (!id) {
-                return next(new HttpException(404, "Session not found"));
+            if (!cookies?.jwt || !id) {
+                return res.status(204).send("No sessions found");
             }
 
             const session = await this.SessionService.update(
@@ -89,10 +107,10 @@ class SessionController implements Controller {
             );
 
             if (!session) {
-                return next(new HttpException(500, "Error deleting session"));
+                return next(new HttpException(500, "Error logging out of session"));
             }
 
-            return res.send({
+            return res.clearCookie("jwt", cookieOptions).send({
                 accessToken: null,
             });
         } catch (error: any) {
