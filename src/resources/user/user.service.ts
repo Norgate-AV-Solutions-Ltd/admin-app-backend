@@ -1,9 +1,9 @@
 import { Model } from "mongoose";
 import UserModel from "./user.model";
 import { CreateUserInput, UpdateUserInput, DeleteUserInput, UserDocument } from "./user.interface";
-import Service from "../../utils/interfaces/service.interface";
+import ApiService from "../../utils/interfaces/service.interface";
 
-class UserService implements Service {
+class UserService implements ApiService {
     private readonly user: Model<UserDocument> = UserModel;
 
     public async read() {

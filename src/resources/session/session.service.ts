@@ -1,9 +1,9 @@
 import { FilterQuery, UpdateQuery, Model } from "mongoose";
 import { SessionDocument } from "./session.interface";
 import SessionModel from "./session.model";
-import Service from "../../utils/interfaces/service.interface";
+import ApiService from "../../utils/interfaces/service.interface";
 
-class SessionService implements Service {
+class SessionService implements ApiService {
     private readonly session: Model<SessionDocument> = SessionModel;
 
     public async create(userId: string, userAgent: string) {
