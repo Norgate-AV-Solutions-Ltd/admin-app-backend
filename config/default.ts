@@ -13,7 +13,7 @@ export default {
         },
     },
     jwt: {
-        algorithm: "RS256",
+        algorithm: "ES256",
         access: {
             ttl: "15m",
             key: {
