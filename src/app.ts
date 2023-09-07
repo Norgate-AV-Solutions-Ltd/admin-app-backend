@@ -10,8 +10,8 @@ import responseTime from "response-time";
 import errorMiddleware from "./middleware/error.middleware";
 import loggerMiddleware from "./middleware/logger.middleware";
 import Controller from "./utils/interfaces/controller.interface";
-import { AppOptions } from "./utils/interfaces/app.interface";
-import { restResponseTimeHistogram } from "./utils/metrics";
+import { AppInfo, AppOptions } from "./utils/interfaces/app.interface";
+import { MetricsService } from "./utils/metrics";
 
 class App {
     private readonly express: Application = express();
@@ -65,7 +65,7 @@ class App {
                     return;
                 }
 
-                restResponseTimeHistogram.observe(
+                MetricsService.restResponseTime.observe(
                     {
                         method: req.method,
                         route: req.route.path,
@@ -84,16 +84,16 @@ class App {
         }
     }
 
-    private onAppDidStart() {
-        const url = `http://localhost:${this.port}${this.apiRoot}`;
-        this.logger?.info(`App is running at ${url}`);
+    private onAppDidStart(app: AppInfo) {
+        // const url = `http://localhost:${this.port}${this.apiRoot}`;
+        this.logger?.info(`App is running at ${app.url}`);
 
         for (const controller of this.controllers) {
             if (!controller.onAppDidStart) {
                 continue;
             }
 
-            controller.onAppDidStart({ url });
+            controller.onAppDidStart(app);
         }
     }
 
@@ -101,24 +101,44 @@ class App {
         this.express.use(errorMiddleware);
     }
 
-    private initializeDatabaseConnection(): void {
-        mongoose.connect(config.get<string>("db.uri"));
+    private async initializeDatabaseConnection() {
+        return await mongoose.connect(config.get<string>("db.uri"));
 
-        mongoose.connection.once("open", () => {
-            this.logger?.info("Connected to MongoDB");
+        // mongoose.connection.once("open", () => {
+        //     this.logger?.info("Connected to MongoDB");
 
-            this.express.listen(this.port, () => {
-                this.onAppDidStart();
-            });
-        });
+        //     this.express.listen(this.port, () => {
+        //         this.onAppDidStart();
+        //     });
+        // });
 
-        mongoose.connection.on("error", (err) => {
-            this.logger?.error(err, "MongoDB connection error");
-        });
+        // mongoose.connection.on("error", (err) => {
+        //     this.logger?.error(err, "MongoDB connection error");
+        // });
     }
 
-    public start(): void {
-        this.initializeDatabaseConnection();
+    public async start(callback?: (app: AppInfo) => void) {
+        await this.initializeDatabaseConnection();
+        this.logger?.info("Connected to MongoDB");
+
+        this.express.listen(this.port, () => {
+            const url = `http://localhost:${this.port}${this.apiRoot}`;
+
+            this.onAppDidStart({ url });
+            callback?.({ url });
+        });
+
+        // mongoose.connection.once("open", () => {
+        //     this.logger?.info("Connected to MongoDB");
+
+        //     this.express.listen(this.port, () => {
+        //         this.onAppDidStart();
+        //     });
+        // });
+
+        // mongoose.connection.on("error", (err) => {
+        //     this.logger?.error(err, "MongoDB connection error");
+        // });
     }
 }
 

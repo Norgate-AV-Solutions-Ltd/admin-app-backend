@@ -32,4 +32,7 @@ export default {
     api: {
         root: "/api/v1",
     },
+    metrics: {
+        port: 9400,
+    },
 };

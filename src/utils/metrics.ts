@@ -1,32 +1,50 @@
 import express, { Request, Response } from "express";
 import client from "prom-client";
-import logger from "./logger";
+import { MetricsServiceOptions } from "./interfaces/metrics.interface";
 
-const app = express();
+export class MetricsService {
+    private static readonly express = express();
+    private static readonly client = client;
 
-export const restResponseTimeHistogram = new client.Histogram({
-    name: "rest_response_time_duration_seconds",
-    help: "Response time of the REST endpoints in seconds",
-    labelNames: ["method", "route", "status_code"],
-});
+    private static restHistogram: client.Histogram | null = null;
+    private static databaseHistogram: client.Histogram | null = null;
 
-export const databaseResponseTimeHistogram = new client.Histogram({
-    name: "db_response_time_duration_seconds",
-    help: "Response time of the database queries in seconds",
-    labelNames: ["operation", "success"],
-});
+    public static start(options: MetricsServiceOptions): void {
+        this.client.collectDefaultMetrics();
 
-export function startMetricServer() {
-    const collectDefaultMetrics = client.collectDefaultMetrics;
+        this.express.get(`${options.apiRoot}${options.path}`, async (_: Request, res: Response) => {
+            res.set("Content-Type", this.client.register.contentType);
+            return res.send(await this.client.register.metrics());
+        });
 
-    collectDefaultMetrics();
+        this.express.listen(options.port, () => {
+            options.logger?.info(
+                `Metrics service running at http://localhost:${options.port}${options.apiRoot}${options.path}`,
+            );
+        });
+    }
 
-    app.get("/api/v1/metrics", async (req: Request, res: Response) => {
-        res.set("Content-Type", client.register.contentType);
-        return res.send(await client.register.metrics());
-    });
+    public static get restResponseTime() {
+        if (!this.restHistogram) {
+            this.restHistogram = new this.client.Histogram({
+                name: "rest_response_time_duration_seconds",
+                help: "Response time of the REST endpoints in seconds",
+                labelNames: ["method", "route", "status_code"],
+            });
+        }
 
-    app.listen(9200, () => {
-        logger.info(`Metrics server listening at http://localhost:9200/api/v1/metrics`);
-    });
+        return this.restHistogram;
+    }
+
+    public static get databaseResponseTime() {
+        if (!this.databaseHistogram) {
+            this.databaseHistogram = new this.client.Histogram({
+                name: "db_response_time_duration_seconds",
+                help: "Response time of the database queries in seconds",
+                labelNames: ["operation", "success"],
+            });
+        }
+
+        return this.databaseHistogram;
+    }
 }

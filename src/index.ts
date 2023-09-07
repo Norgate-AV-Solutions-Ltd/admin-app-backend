@@ -10,7 +10,7 @@ import DocsController from "./resources/docs/docs.controller";
 import logger from "./utils/logger";
 import validateEnv from "./utils/validateEnv";
 import swaggerOptions from "./utils/swagger";
-import { startMetricServer } from "./utils/metrics";
+import { MetricsService } from "./utils/metrics";
 
 validateEnv();
 
@@ -29,9 +29,14 @@ try {
         logger,
     });
 
-    app.start();
-
-    startMetricServer();
+    app.start(() => {
+        MetricsService.start({
+            port: config.get<number>("metrics.port"),
+            apiRoot: config.get<string>("api.root"),
+            path: "/metrics",
+            logger,
+        });
+    });
 } catch (error: any) {
     logger.error(error, "Error starting application");
     process.exit(1);

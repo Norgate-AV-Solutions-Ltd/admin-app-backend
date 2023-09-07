@@ -4,7 +4,7 @@ import { AppInfo } from "./app.interface";
 interface Controller {
     path: string;
     router: Router;
-    onAppDidStart?: (info: AppInfo) => void;
+    onAppDidStart?: (app: AppInfo) => void;
 }
 
 export default Controller;
