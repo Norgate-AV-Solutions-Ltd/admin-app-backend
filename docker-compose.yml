@@ -4,11 +4,10 @@ services:
   app:
     container_name: app
     restart: unless-stopped
-    environment:
-      - NODE_ENV=production
-      - DATABASE_URI=${DATABASE_URI}
-      - JWT_SECRET=${JWT_SECRET}
+    env_file:
+      - .env
     build:
       context: .
     ports:
       - 3500:3500
+      - 9200:9200
