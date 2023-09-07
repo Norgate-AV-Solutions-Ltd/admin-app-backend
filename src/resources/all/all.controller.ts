@@ -3,18 +3,21 @@ import { Request, Response, Router } from "express";
 import Controller from "../../utils/interfaces/controller.interface";
 
 class AllController implements Controller {
-    public path = "*";
-    public router = Router();
+    public readonly path = "*";
+    public readonly router = Router();
 
     constructor() {
+        this.initializeMiddleware();
         this.initializeRoutes();
     }
+
+    private initializeMiddleware(): void {}
 
     private initializeRoutes(): void {
         this.router.route(this.path).all(this.getAll);
     }
 
-    private getAll(req: Request, res: Response) {
+    private getAll(req: Request, res: Response): Response | void {
         res.status(404);
 
         if (req.accepts("html")) {

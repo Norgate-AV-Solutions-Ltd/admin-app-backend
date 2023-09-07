@@ -2,12 +2,15 @@ import { Request, Response, Router } from "express";
 import Controller from "../../utils/interfaces/controller.interface";
 
 class HealthcheckController implements Controller {
-    public path = "/healthcheck";
-    public router = Router();
+    public readonly path = "/healthcheck";
+    public readonly router = Router();
 
     constructor() {
+        this.initializeMiddleware();
         this.initializeRoutes();
     }
+
+    private initializeMiddleware(): void {}
 
     private initializeRoutes(): void {
         this.router.get(this.path, this.getHealthcheck);
@@ -24,8 +27,8 @@ class HealthcheckController implements Controller {
      *         200:
      *           description: App is up and running
      */
-    private getHealthcheck(_: Request, res: Response) {
-        res.send({ message: "OK" });
+    private getHealthcheck(_: Request, res: Response): Response {
+        return res.send({ message: "OK" });
     }
 }
 

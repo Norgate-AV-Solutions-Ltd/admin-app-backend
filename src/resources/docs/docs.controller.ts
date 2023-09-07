@@ -6,10 +6,10 @@ import { AppInfo } from "../../utils/interfaces/app.interface";
 import logger from "../../utils/logger";
 
 class DocsController implements Controller {
-    public path = "/docs";
-    public router = Router();
-    private options: swaggerJsdoc.Options;
-    private spec: object;
+    public readonly path = "/docs";
+    public readonly router = Router();
+    private readonly options: swaggerJsdoc.Options;
+    private readonly spec: object;
 
     constructor(options: swaggerJsdoc.Options) {
         this.options = options;
@@ -19,22 +19,22 @@ class DocsController implements Controller {
         this.initializeRoutes();
     }
 
-    public onAppDidStart({ url }: AppInfo) {
+    public onAppDidStart({ url }: AppInfo): void {
         logger.info(`Docs are available at ${url}${this.path}`);
     }
 
-    private initializeMiddleware() {
+    private initializeMiddleware(): void {
         this.router.use(this.path, swaggerUi.serve, swaggerUi.setup(this.spec));
     }
 
-    private initializeRoutes() {
+    private initializeRoutes(): void {
         this.router.get(`${this.path}.json`, this.getDocs);
     }
 
-    private getDocs = (_: Request, res: Response) => {
+    private getDocs(_: Request, res: Response): Response {
         res.setHeader("Content-Type", "application/json");
-        res.send(this.spec);
-    };
+        return res.send(this.spec);
+    }
 }
 
 export default DocsController;

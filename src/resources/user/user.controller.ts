@@ -15,16 +15,16 @@ import {
 import validationMiddleware from "../../middleware/validation.middleware";
 
 class UserController implements Controller {
-    public path = "/users";
-    public router = Router();
-    private UserService = new UserService();
+    public readonly path = "/users";
+    public readonly router = Router();
+    private readonly UserService = new UserService();
 
     constructor() {
         this.initializeMiddleware();
         this.initializeRoutes();
     }
 
-    private initializeMiddleware() {}
+    private initializeMiddleware(): void {}
 
     private initializeRoutes(): void {
         this.router

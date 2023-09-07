@@ -12,19 +12,19 @@ import TokenService from "../../utils/token";
 import cookieOptions from "../../utils/cookie";
 
 class SessionController implements Controller {
-    public path = "/sessions";
-    public router = Router();
-    private SessionService = new SessionService();
-    private UserService = new UserService();
+    public readonly path = "/sessions";
+    public readonly router = Router();
+    private readonly SessionService = new SessionService();
+    private readonly UserService = new UserService();
 
     constructor() {
         this.initializeMiddleware();
         this.initializeRoutes();
     }
 
-    private initializeMiddleware() {}
+    private initializeMiddleware(): void {}
 
-    private initializeRoutes() {
+    private initializeRoutes(): void {
         this.router
             .route(this.path)
             .post(
